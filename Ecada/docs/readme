@@ -1,12 +1,1 @@
-¿ìÃø Á¤·Ä : text-right
-¿µ¿ªÀ» ¸¸µé¶© ¾Æ·¡¿Í °°ÀÌ
-<div class="row">
-    <div class="col-md-12 text-right">
-        [...³»¿ë...]
-    </div>
-</div>
-°¡·Î ²Ë Â÷°Ô : col-md-12
-
-ÆäÀÌÁö ÀÌµ¿ ¹æ¹ı :
-movePage ÇÔ¼ö È£Ãâ·Î ÀÌµ¿ÇÑ´Ù. (common.js) 
-ex) javascript:movePage(this, '/member/goRegisterPage.do')
+ë¬¸ê´€í˜¸ í¬íŠ¸í´ë¦¬ì˜¤ì…ë‹ˆë‹¤.
