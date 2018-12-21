@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.tj.dao.BoardAttachDao">
+	<insert id="insertAttachInfo" parameterType="HashMap">
+		INSERT INTO board_attach (
+			`type_seq`,
+			`board_seq`,
+			`filename`,
+			`fake_filename`,
+			`file_size`,
+			`file_type`,
+			`create_date`
+		) VALUES (
+			#{typeSeq},
+			#{boardSeq},
+			#{filename},
+			#{fakeFilename},
+			#{fileSize},
+			#{fileType},
+			NOW()
+		)
+	</insert>
+	
+	<select id="getFile" parameterType="HashMap" resultType="HashMap">
+		SELECT *
+		  FROM board_attach
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</select>
+	
+	<select id="getAttachFileInfo" parameterType="int" resultType="HashMap">
+		SELECT *
+		  FROM board_attach
+		 WHERE file_idx = #{0}
+	</select>
+	
+	<delete id="deleteAttach" parameterType="int">
+		DELETE FROM board_attach
+		 WHERE file_idx = #{0}
+	</delete>
+	
+	<delete id="deleteAttachBoard" parameterType="HashMap">
+		DELETE
+		  FROM board_attach
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</delete>
+	
+	<select id="hasFileChk" parameterType="HashMap" resultType="int">
+		SELECT COUNT(*)
+			FROM board_attach
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</select>
+</mapper>

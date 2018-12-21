@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.tj.dao.NoticeDao">
+	<!-- resultType은 반드시 있어야 함 -->
+	<select id="list" parameterType="HashMap" resultType="HashMap">
+		SELECT board_seq AS boardSeq, 
+				   type_seq AS typeSeq,
+				   member_idx AS memberIdx,
+				   member_id AS memberId, 
+				   member_nick AS memberNick,
+				   title,
+				   hits, 
+				   date_format(create_date, '%Y-%m-%d %H:%i:%s') AS createDate
+		  FROM board
+		 WHERE type_seq = #{typeSeq}
+		<if test="searchType != null and searchType == 1">
+			 AND ( title LIKE CONCAT('%', #{searchText}, '%') OR content LIKE CONCAT('%', #{searchText}, '%') )
+		</if>
+		<if test="searchType != null and searchType == 2">
+			 AND title LIKE CONCAT('%', #{searchText}, '%')
+		</if>
+		<if test="searchType != null and searchType == 3">
+			 AND content LIKE CONCAT('%', #{searchText}, '%')
+		</if>
+		 ORDER BY ${sidx} ${sord}
+		 LIMIT ${start}, ${rows}
+	</select>
+	
+	<select id="getTotalArticleCnt" parameterType="HashMap" resultType="int">
+		SELECT COUNT(board_seq)
+		  FROM board
+		 WHERE type_seq = #{typeSeq}
+		<if test="searchType != null and searchType == 1">
+			 AND ( title LIKE CONCAT('%', #{searchText}, '%') OR content LIKE CONCAT('%', #{searchText}, '%') )
+		</if>
+		<if test="searchType != null and searchType == 2">
+			 AND title LIKE CONCAT('%', #{searchText}, '%')
+		</if>
+		<if test="searchType != null and searchType == 3">
+			 AND content LIKE CONCAT('%', #{searchText}, '%')
+		</if>
+	</select>
+
+	<update id="updateHits" parameterType="HashMap">
+		UPDATE board
+		   SET hits = hits + 1
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</update>	
+	
+	<select id="getBoard" parameterType="HashMap" resultType="HashMap">
+		SELECT board_seq AS boardSeq,
+					 type_seq AS typeSeq,
+					 member_id AS memberId,
+					 member_nick AS memberNick,
+					 title,
+					 content,
+					 has_file AS hasFile,
+					 hits,
+					 create_date AS createDate,
+					 update_date AS updateDate
+		  FROM board
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</select>
+	
+	<insert id="write" parameterType="HashMap" useGeneratedKeys="true" keyProperty="boardSeq">
+		INSERT INTO board (
+			`type_seq`,
+			`member_idx`,
+			`member_id`,
+			`member_nick`,
+			`title`,
+			`content`,
+			`has_file`,			
+			`create_date`
+		)
+		VALUES (
+			#{typeSeq},
+			#{memberIdx},
+			#{memberId},
+			#{memberNick},
+			#{title},
+			#{contents},
+			#{hasFile},
+			NOW()
+		)
+	</insert>
+	
+	<delete id="delete" parameterType="HashMap">
+		DELETE FROM board
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</delete>
+	
+	<update id="update" parameterType="HashMap">
+		UPDATE board
+		   SET title = #{title},
+		       content = #{contents},
+		       has_file = #{hasFile},
+		       update_date = NOW()
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</update>
+	
+	<update id="hasFileUpdate" parameterType="HashMap">
+		UPDATE board
+		   SET has_file = 0
+		 WHERE type_seq = #{typeSeq}
+		   AND board_seq = #{boardSeq}
+	</update>
+</mapper>
